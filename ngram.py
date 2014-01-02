@@ -6,18 +6,20 @@ import re
 
 class Ngram(object):
     ''' n-gram '''
-    def __init__(self, files=None, content=None):
-        self.content = content
+    def __init__(self, data=None):
+        self.content = None
         self.counter = None
 
-        if files:
-            assert isinstance(files, file)
-            self.files = files
-            self.read_files()
+        if isinstance(data, file):
+            self.data = data.read().decode('utf-8')
+        else:
+            self.data = data
+
+        self.read_files()
 
     def read_files(self):
         ''' Read sample form files. '''
-        self.content = self.files.read().replace('\n', ' ').decode('utf-8')
+        self.content = self.data.replace('\n', ' ')
         self.content = re.sub(ur'[\w\/\.\-，、。：；？ ]', '', self.content)
 
     def make_gram(self, nums=6):
@@ -63,6 +65,7 @@ class Ngram(object):
 
 if __name__ == '__main__':
     NGRAM = Ngram(open('./sample.txt'))
+    #NGRAM = Ngram(u'我我我我我是我是我是我是我我我是我是')
     NGRAM.make_counter()
     for words in NGRAM.make_gram():
         print words
