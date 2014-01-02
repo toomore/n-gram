@@ -10,7 +10,7 @@ class Ngram(object):
     def read_files(self, path):
         f = open(path, 'r')
         self.content = f.read().replace('\n', ' ').decode('utf-8')
-        self.content = re.sub('[\w\/\.\- ]', '', self.content)
+        self.content = re.sub(ur'[\w\/\.\-，、。：；？ ]', '', self.content)
 
     def make_gram(self, n=6):
         return_data = []
