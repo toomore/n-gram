@@ -1,59 +1,71 @@
 # -*- coding: utf-8 -*-
+''' n-gram '''
 from collections import Counter
 import re
 
 
 class Ngram(object):
+    ''' n-gram '''
     def __init__(self):
-        pass
+        self.content = None
+        self.counter = None
 
     def read_files(self, path):
-        f = open(path, 'r')
-        self.content = f.read().replace('\n', ' ').decode('utf-8')
-        self.content = re.sub(ur'[\w\/\.\-，、。：；？ ]', '', self.content)
+        ''' Read sample form files. '''
+        with open(path, 'r') as files:
+            self.content = files.read().replace('\n', ' ').decode('utf-8')
+            self.content = re.sub(ur'[\w\/\.\-，、。：；？ ]', '', self.content)
 
-    def make_gram(self, n=6):
+    def make_gram(self, nums=6):
+        ''' Make n gram '''
         return_data = []
-        l = len(self.content)
+        content_len = len(self.content)
 
-        for i in sorted(range(n+1), reverse=1):
-            assert (l-i) > 0
-            for e in range(l-i):
-                add_str = self.content[e : e+i]
-                return_data.append(add_str) if add_str else None
+        for i in sorted(range(nums + 1), reverse=1):
+            assert (content_len - i) > 0
+            for loops in range(content_len - i):
+                add_str = self.content[loops : loops + i]
+                if add_str:
+                    return_data.append(add_str)
 
         return return_data
 
     def make_counter(self):
+        ''' Make words to counter '''
         self.counter = Counter(self.make_gram())
 
     def get_gram(self):
-        d = dict(self.counter)
-        d_copy = d.copy()
+        ''' Get n-gram result. '''
+        all_counter = dict(self.counter)
+        all_counter_copy = all_counter.copy()
 
-        for i in d:
-            if d_copy.get(i):
-                if len(i) == 1 or d_copy[i] == 1:
-                    del d_copy[i]
+        for i in all_counter:
+            if all_counter_copy.get(i):
+                if len(i) == 1 or all_counter_copy[i] == 1:
+                    del all_counter_copy[i]
                 else:
-                    for ii in range(len(i)): # i = abcd, ii = 0~3
-                        for e in range(1, len(i)+1): # e = 1,2,3,4
-                            if e > ii and d_copy.get(i[ii:e]) and i[ii:e] != i \
-                                      and (d_copy[i[ii:e]] <= d_copy[i]):
-                                del d_copy[i[ii:e]]
+                    for loops in range(len(i)): # i = abcd, loops = 0~3
+                        for sub_loops  in range(1, len(i)+1):
+                            # sub_loops = 1,2,3,4
+                            if sub_loops > loops and \
+                                all_counter_copy.get(i[loops:sub_loops]) and \
+                                i[loops:sub_loops] != i and \
+                                (all_counter_copy[i[loops:sub_loops]] <= \
+                                     all_counter_copy[i]):
+                                del all_counter_copy[i[loops:sub_loops]]
 
-        return d_copy
+        return all_counter_copy
 
 
 if __name__ == '__main__':
-    n = Ngram()
-    n.read_files('./sample.txt')
-    n.make_counter()
-    for i in n.make_gram():
-        print i
-    #n.counter.most_common(10):
-    #print len(n.make_gram())
-    #for i in Counter(n.make_gram()).most_common(10):
-    #    print i[0],i[1]
-    for i in Counter(n.get_gram()).most_common(10):
-        print i[0],i[1]
+    NGRAM = Ngram()
+    NGRAM.read_files('./sample.txt')
+    NGRAM.make_counter()
+    for words in NGRAM.make_gram():
+        print words
+    #NGRAM.counter.most_common(10):
+    #print len(NGRAM.make_gram())
+    #for counts in Counter(NGRAM.make_gram()).most_common(10):
+    #    print counts[0], counts[1]
+    for counts in Counter(NGRAM.get_gram()).most_common(10):
+        print counts[0], counts[1]
