@@ -37,13 +37,9 @@ class Ngram(object):
 
         return return_data
 
-    def make_counter(self):
-        ''' Make words to counter '''
-        self.counter = Counter(self.make_gram())
-
     def get_gram(self):
         ''' Get n-gram result. '''
-        all_counter = dict(self.counter)
+        all_counter = dict(Counter(self.make_gram()))
         all_counter_copy = all_counter.copy()
 
         for i in all_counter:
@@ -67,7 +63,6 @@ class Ngram(object):
 if __name__ == '__main__':
     NGRAM = Ngram(open('./sample.txt'))
     #NGRAM = Ngram(u'我我我我我是我是我是我是我我我是我是')
-    NGRAM.make_counter()
     #for words in NGRAM.make_gram():
     #    print words
     #NGRAM.counter.most_common(10):
