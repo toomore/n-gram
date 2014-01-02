@@ -20,7 +20,8 @@ class Ngram(object):
     def read_files(self):
         ''' Read sample form files. '''
         self.content = self.data.replace('\n', ' ')
-        self.content = re.sub(ur'[\w\/\.\-，、。：；？ ]', '', self.content)
+        self.content = re.sub(ur'[\w\/\.\-，、。：；？<:>()（） ]',
+                              '', self.content)
 
     def make_gram(self, nums=6):
         ''' Make n gram '''
@@ -67,8 +68,8 @@ if __name__ == '__main__':
     NGRAM = Ngram(open('./sample.txt'))
     #NGRAM = Ngram(u'我我我我我是我是我是我是我我我是我是')
     NGRAM.make_counter()
-    for words in NGRAM.make_gram():
-        print words
+    #for words in NGRAM.make_gram():
+    #    print words
     #NGRAM.counter.most_common(10):
     #print len(NGRAM.make_gram())
     #for counts in Counter(NGRAM.make_gram()).most_common(10):
